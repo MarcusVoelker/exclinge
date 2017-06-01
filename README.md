@@ -1,5 +1,5 @@
 # exclinge
-Clock and Exchange calender for the command line
+Clock and Exchange calendar for the command line
 
 To build, simply invoke
 ```
