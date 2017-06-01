@@ -1,7 +1,10 @@
 package com.exclinge;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -178,26 +181,44 @@ public class App
             }
         }
 
-        public void run() {
+        public void run()
+        {
             findAppointments();
         }
     }
 
+    private static String readLine() throws IOException
+    {
+        if (System.console() != null)
+        {
+            return System.console().readLine();
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return reader.readLine();
+    }
+
+    private static char[] readPassword() throws IOException
+    {
+        if (System.console() != null)
+            return System.console().readPassword();
+        System.out.print("(warning: will be visible) ");
+        return readLine().toCharArray();
+    }
 
 
     public static void main( String[] args )
     {
-        System.out.print("Enter your e-mail address: ");
-        String email = System.console().readLine();
-        System.out.print("Enter your user name: ");
-        String user = System.console().readLine();
-        System.out.print("Enter your password: ");
-        String pw = new String(System.console().readPassword());
-        ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
-        ExchangeCredentials credentials = new WebCredentials(user, pw);
-        service.setCredentials(credentials);
         try
         {
+            System.out.print("Enter your e-mail address: ");
+            String email = readLine();
+            System.out.print("Enter your user name: ");
+            String user = readLine();
+            System.out.print("Enter your password: ");
+            String pw = new String(readPassword());
+            ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
+            ExchangeCredentials credentials = new WebCredentials(user, pw);
+            service.setCredentials(credentials);
             service.autodiscoverUrl(email, new RedirectionUrlCallback());
             Timer timer = new Timer();
             timer.schedule(new PrintAppointments(service), 0, 500);
